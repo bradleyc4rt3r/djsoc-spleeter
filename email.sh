@@ -1,11 +1,16 @@
 #!/bin/bash
 set -x
+set -e
+set -o pipefail
+exec > /var/log/spleeter.log
+
+ZIP_NAME=$1
+ZIP_DIR=$2
+RECIPIENT=$3
+
+cd $ZIP_DIR || exit 0
 
 
-cd /home/spleeter/spleeter
-zip -r split_output.zip audio_output/
-
-RECIPIENT=$1
 cat <<EOF > destination.json
 {
   "ToAddresses":  ["${RECIPIENT}"],
@@ -31,7 +36,7 @@ cat <<EOF > message.json
   }
 }
 EOF
-aws --region eu-west-2 ses send-email --from "Swansea University DJ Society <dj@swansea-societies.co.uk>" --destination file://destination.json --message file://message.json --attachment file://split_output.zip
+aws --region eu-west-2 ses send-email --from "Swansea University DJ Society <dj@swansea-societies.co.uk>" --destination file://destination.json --message file://message.json --attachment file://${ZIP_NAME}
 
-rm -f split_output.zip
+rm -rf $ZIP_NAME
 set +x

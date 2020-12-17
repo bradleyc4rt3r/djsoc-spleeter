@@ -1,17 +1,15 @@
 #!/bin/bash
 set -x
-
-cd /home/spleeter/spleeter
-zip -r split_output.zip audio_output/
+#set -e
+set -o pipefail
 
 cat <<EOF > tmp.mail
 <h1>Swansea DJ Society - Track Splitter</h1>
 Please open the link to a zip file of the tune split into it's components!<br>
 <br>
-There are many FUTURE CHANGES to come such as: batch-processing, number of stem choice, multi file-type input and actually now I come to think about it quite a bit more..<br>
+There are many future changes to come such as: batch-processing, number of stem choice, multi file-type input and actually now I come to think about it quite a bit more..<br>
 Kind regards,<br><br>
-Swansea Universities DJ Society<br><br>
-Tel: 07496479569<br>
+Swansea Universities DJ Society<br>
 Email: dj@swansea-societies.co.ukbr>
 Web: www.su-djsoc.co.uk<br
 ><br>
