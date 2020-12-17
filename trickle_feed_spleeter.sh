@@ -1,14 +1,16 @@
 #!/bin/bash
+
+
 SLEEP=100 #seconds
 set -x
 
-source ~/miniconda3/etc/profile.d/conda.sh
-conda activate spleeter-cpu
-wait
+#MUST run via bash -i interactive shell to work
+conda activate spleeter
+
 
 cd /mnt/spleeter-readable
 
-for file in *; do spleeter separate -i $file -o /home/spleeter/spleeter/audio_output -p spleeter:2stems; wait; done
+for file in *; do spleeter separate -i $file -o /data/complete/audio_output -p spleeter:2stems; done
 	echo 'Please check /home/spleeter/spleeter/audio_output for many outputs'
 
 set +x
