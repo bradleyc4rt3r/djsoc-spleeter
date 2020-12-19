@@ -22,6 +22,7 @@ cleanup(){
     sync;
 
     cd "/data/envs/${FILE_NAME}" &&
+    /home/brad/miniconda3/bin/conda init bash &&
     /home/brad/miniconda3/bin/conda activate spleeter && {
       /home/brad/miniconda3/envs/spleeter/bin/spleeter separate -i ${FILE_NAME} -o /data/complete -p spleeter:2stems
       wait
