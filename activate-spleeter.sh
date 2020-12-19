@@ -19,12 +19,11 @@ cleanup(){
     export MPLCONFIGDIR="/tmp/MPLCONFIGDIR"
 
     #System tweaks
-    sync; #makecache_dropping script on crontab
+    sync;
 
-    #Source bashrc from whichever user ansible installs under to work on server
     cd "/data/envs/${FILE_NAME}" &&
-    source /home/brad/.bashrc && conda activate spleeter && {
-      /home/brad/miniconda3/envs/spleeter/bin/spleeter separate -i ${FILE_NAME} -o /data/complete -p spleeter:2stems
+    /root/miniconda3/bin/conda activate spleeter && {
+      /root/miniconda3/envs/spleeter/bin/spleeter separate -i ${FILE_NAME} -o /data/complete -p spleeter:2stems
       wait
       if [ -d "/data/complete/${FILE_NAME%.*}/" ]
       then
