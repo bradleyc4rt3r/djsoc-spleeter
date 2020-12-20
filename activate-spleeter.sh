@@ -14,16 +14,15 @@ cleanup(){
 
 {
     #Set dependency matplotlib env vars&dirs
-    mkdir -m 777 /tmp/NUMBA_CACHE_dIR /tmp/MPLCONFIGDIR &> /dev/null
-    export NUMBA_CACHE_DIR=/tmp/NUMBA_CACHE_DIR/
+    mkdir -m 777 /tmp/NUMBA_CACHE_DIR /tmp/MPLCONFIGDIR &> /dev/null
+    export NUMBA_CACHE_DIR="/tmp/NUMBA_CACHE_DIR"
     export MPLCONFIGDIR="/tmp/MPLCONFIGDIR"
 
     #System tweaks
     sync;
 
     cd "/data/envs/${FILE_NAME}" &&
-    /home/brad/miniconda3/bin/conda init bash &&
-    /home/brad/miniconda3/bin/conda activate spleeter && {
+    source activate spleeter && {
       /home/brad/miniconda3/envs/spleeter/bin/spleeter separate -i ${FILE_NAME} -o /data/complete -p spleeter:2stems
       wait
       if [ -d "/data/complete/${FILE_NAME%.*}/" ]
