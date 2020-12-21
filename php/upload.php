@@ -11,7 +11,6 @@ if(isset($_POST['submit'])) {
     $output_dir = "/data/complete/" . preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename) . "/";
 
     if(in_array($fileType, $allowedExts)) {
-        echo "Audio format is correct - " . $fileType . ".";
         $returnCode = 0;
     } else {
         $returnCode = 1;
@@ -22,12 +21,10 @@ if(isset($_POST['submit'])) {
 }
 
 function prepEnv($split_dir, $filename) {
-
     try {
         if (!is_dir("/data/envs/" . $filename . "/")) {
             shell_exec('mkdir /data/envs/' . $filename);
             shell_exec('chmod 0777 /data/envs/' . $filename);
-            #mkdir("/data/envs/" . $_FILES["fileToUpload"]["name"] . "/", 0777, true);
         }
     } catch (Exception $e) {
         die ("Could not create directory: " . $split_dir);
@@ -49,13 +46,12 @@ function prepEnv($split_dir, $filename) {
 
 function activateSpleeter($filename) {
     chdir('/var/www/html/');
-    $spleeter = "sudo -H -u brad bash -i -c '/home/brad/miniconda3/bin/conda init bash && ./activate-spleeter.sh '" . $filename;
-    shell_exec($spleeter);
+    $shell_command = "bash -i ./activate-spleeter.sh " . $filename;
+    shell_exec($shell_command);
 }
 
 
 function zipFiles($filename, $zipFile) {
-
     $rootPath = realpath('/data/complete/' . preg_replace('/\\.[^.\\s]{3,4}$/', '', $filename) . '/');
     $zip = new ZipArchive();
     $zip->open($zipFile, ZipArchive::CREATE | ZipArchive::OVERWRITE);
@@ -87,16 +83,17 @@ function downloadZip($filename, $zipFile){
 
         shell_exec("sudo -H -u brad bash -i -c 'chmod -R 0777 '" . $zipDir);
         if(!rename($oldZipPath, $zipPath)) {
-            throw new Exception("Could not move zip: " . $zipFile);
+            die("Could not move zip: " . $zipFile);
         }
         else {
-            $returnCode = 1;
-            echo "File moved - Download should've happened...";
+            global $returnCode;
+            $returnCode == 0;
         }
+
         chdir($zipDir);
         if (headers_sent()) {
-            throw new Exception("HTTP headers already sent");
-        } else{
+            die("HTTP headers already sent");
+        } else {
             header('Content-type: application/zip');
             header('Content-Disposition: attachment; filename=' . $zipFile);
             header('Content-Length: ' . filesize($zipFile));
@@ -105,7 +102,6 @@ function downloadZip($filename, $zipFile){
     }
 
 }
-
 // Main
 
 if($returnCode == 0) {
@@ -121,11 +117,11 @@ if($returnCode == 0) {
         } else {
             zipFiles($filename, $zipFile);
             downloadZip($filename, $zipFile);
-            exit;
         }
     } catch (Exception $e) {
         die ($e -> getMessage());
     }
 } else {
-    echo "An unknown problem occurred...";
+    die("An unknown problem occurred...");
 }
+?>
