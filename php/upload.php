@@ -49,7 +49,7 @@ function prepEnv($split_dir, $filename) {
 
 function activateSpleeter($filename) {
     chdir('/var/www/html/');
-    $spleeter = "sudo -H -u brad bash -i -c '/home/brad/miniconda3/bin/conda init bash && ./activate-spleeter.sh' " . $filename;
+    $spleeter = "sudo -H -u brad bash -i -c '/home/brad/miniconda3/bin/conda init bash && ./activate-spleeter.sh '" . $filename;
     shell_exec($spleeter);
 }
 
@@ -85,19 +85,27 @@ function downloadZip($filename, $zipFile){
         $zipPath = $zipDir . '/' . $zipFile;
         $oldZipPath = "/var/www/html/" . $zipFile;
 
+        shell_exec("sudo -H -u brad bash -i -c 'chmod -R 0777 '" . $zipDir);
         if(!rename($oldZipPath, $zipPath)) {
             throw new Exception("Could not move zip: " . $zipFile);
         }
         else {
-            echo "File moved!";
+            $returnCode = 1;
+            echo "File moved - Download should've happened...";
         }
         chdir($zipDir);
-        header('Content-type: application/zip');
-        header('Content-Disposition: attachment; filename=' . $zipFile);
-        readfile($zipFile);
+        if (headers_sent()) {
+            throw new Exception("HTTP headers already sent");
+        } else{
+            header('Content-type: application/zip');
+            header('Content-Disposition: attachment; filename=' . $zipFile);
+            header('Content-Length: ' . filesize($zipFile));
+            readfile($zipFile);
+        }
     }
 
 }
+
 // Main
 
 if($returnCode == 0) {
@@ -113,6 +121,7 @@ if($returnCode == 0) {
         } else {
             zipFiles($filename, $zipFile);
             downloadZip($filename, $zipFile);
+            exit;
         }
     } catch (Exception $e) {
         die ($e -> getMessage());

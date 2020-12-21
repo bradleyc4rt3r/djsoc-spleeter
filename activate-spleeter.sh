@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#set -m
+set -m
 #set -x
-set -e
+#set -e
 set -o pipefail
-exec > /var/log/spleeter.log
+#exec > /var/log/spleeter.log
 
 FILE_NAME=$1
 
