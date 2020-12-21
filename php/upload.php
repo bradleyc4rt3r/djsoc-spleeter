@@ -46,8 +46,8 @@ function prepEnv($split_dir, $filename) {
 
 function activateSpleeter($filename) {
     chdir('/var/www/html/');
-    $shell_command = "bash -i ./activate-spleeter.sh " . $filename;
-    shell_exec($shell_command);
+    $spleeter = "sudo -H -u brad bash -i -c '/home/brad/miniconda3/bin/conda init bash && ./activate-spleeter.sh '" . $filename;
+    shell_exec($spleeter);
 }
 
 
